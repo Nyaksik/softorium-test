@@ -3,16 +3,21 @@ import useContolInput from "../../hooks/useContolInput"
 import useVideoPlayer from "../../hooks/useVideoPlayer"
 import WebCam from "../../components/WebCam/WebCam"
 import TokenService from "../../services/tokenService"
-import { PHOTO_URL } from "../../constant"
+import { PHOTO_URL, TIMEZONE } from "../../constant"
 import './RegistrationPage.css'
+import InputMask from "react-input-mask"
+import SignupService from "../../services/signupService"
+import { useNavigate } from "react-router-dom"
 
 function LoginPage() {
-    const name = useContolInput()
+    const name = useContolInput('')
     const phone = useContolInput('')
-    const password = useContolInput()
-    const email = useContolInput()
+    const password = useContolInput('')
+    const email = useContolInput('')
     const birthday = useContolInput()
-    const videoPlayer = useVideoPlayer()
+    const timezone = useContolInput('+00')
+    const videoPlayer = useVideoPlayer('')
+    const navigate = useNavigate()
     const [refresh, setRefresh] = useState(false)
 
     const data = {
@@ -21,11 +26,20 @@ function LoginPage() {
         name: name.value,
         email: email.value,
         birthday: birthday.value,
-        avatar: new TokenService().getToken(PHOTO_URL) || ''
+        time_zone: timezone.value,
+        avatar: new TokenService().getToken(PHOTO_URL).split(',')[1] || ''
+    }
+
+    async function singup(e) {
+        e.preventDefault()
+        const res = await new SignupService().postNewUser(data)
+        if(res.ok) {
+            navigate('/signin')
+        }
     }
 
     function previewFile(e) {
-        const file = e.target.files[0]
+        const currentFile = e.target.files[0]
         const reader = new FileReader()
         
         reader.addEventListener("load", function () {
@@ -33,8 +47,8 @@ function LoginPage() {
             setRefresh(!refresh)
         }, false)
     
-        if (file) {
-            reader.readAsDataURL(file)
+        if (currentFile) {
+            reader.readAsDataURL(currentFile)
         }
     }
 
@@ -42,16 +56,22 @@ function LoginPage() {
         <>
             <div className="Registration">
                 <input { ...name } className="Registration__input" placeholder="Введите имя и/или Фамилию" />
-                <input { ...phone } className="Registration__input" type="tel" placeholder="Введите номер телефона" />
+                <InputMask { ...phone } className="Registration__input" mask="+99999999999" placeholder="Введите номер телефона" />
                 <input { ...email } className="Registration__input" type="email" placeholder="Введите email" />
-                <input { ...password } className="Registration__input" placeholder="Введите пароль" />
+                <input { ...password } type="password" className="Registration__input" placeholder="Введите пароль" />
                 <input { ...birthday } className="Registration__input" type="date" placeholder="Введите дату вашег рождения" />
-                <input className="Registration__input" placeholder="Выберите часовой пояс" />
-                <label htmlFor="file">Загрузить аватар</label>
+                <select { ...timezone } className="Registration__input" placeholder="Выберите часовой пояс">
+                    {TIMEZONE.map((it, index) => {
+                        return <option key={index} value={it.timezone}>{it.city} UTC{it.timezone}</option>
+                    })}
+                </select>
                 <input className="Registration__input" id="file" onChange={previewFile} type="file" placeholder="Upload an avatar" />
-                <button onClick={videoPlayer.clickHandler}>Сделать снимок</button>
-                <img className="Registration__img" src={new TokenService().getToken(PHOTO_URL)} alt="avatar" />
-                <button onClick={() => console.log(data)}>Зарегистрироваться</button>
+                <div className="Registration__img">
+                    <img src={new TokenService().getToken(PHOTO_URL)} alt="avatar" />
+                    <label htmlFor="file">Загрузить<br/>аватар</label>
+                </div>
+                <button className="Registration__btn" onClick={videoPlayer.clickHandler}>Сделать снимок</button>
+                <button className="Registration__btn" type="submit" onClick={singup}>Зарегистрироваться</button>
             </div>
                 <WebCam { ...videoPlayer } />
         </>

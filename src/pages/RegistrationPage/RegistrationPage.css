@@ -1,15 +1,17 @@
 .Registration {
     position: absolute;
     width: 330px;
-    left: 25%;
-    top: 25%;
+    height: 580px;
+    left: calc(50% - 330px / 2);
+    top: calc(50% - 580px / 2);
 
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 
-    border: 2px solid black;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.2);
     padding: 30px;
 }
 
@@ -17,7 +19,8 @@
     width: 100%;
 }
 
-.Registration__input:not(:last-child) {
+.Registration__input:not(:last-child),
+.Registration__btn:not(:last-child) {
     margin-bottom: 10px;
 }
 
@@ -26,12 +29,38 @@
 }
 
 .Registration__img {
+    position: relative;
     border-radius: 50%;
-    width: 150px;
-    height: 150px;
+    overflow: hidden;
+    margin-bottom: 10px;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.Registration__img img {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     object-fit: cover;
 }
 
+.Registration__img label[for="file"] {
+    position: absolute;
+    width: 82px;
+    height: 42px;
+    left: calc(50% - 82px / 2);
+    top: calc(50% - 42px / 2);
+    color: aliceblue;
+    text-align: center;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.Registration__img,
+.Registration__img img {
+    width: 150px;
+    height: 150px;
+}
+
+.Registration__btn {
+    width: 75%;
+}

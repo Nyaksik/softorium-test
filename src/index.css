@@ -16,11 +16,40 @@ code {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  font-size: 16px;
 }
 
-input {
+input, select {
   padding: 5px 0 5px 10px;
+}
+
+input, select, button {
   outline: none;
   border: 2px rgba(0, 0, 0, .5) solid;
   border-radius: 8px;
+}
+
+input[type="date"] {
+  cursor: text;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+button {
+  padding: 10px;
+  background-color: white;
+  transition: .2s;
+}
+
+button:hover {
+  background-color: rgba(0, 0, 0, .5);
+  color: white;
+  cursor: pointer;
+}
+
+button:active {
+  background-color: white;
+  color: black;
 }
