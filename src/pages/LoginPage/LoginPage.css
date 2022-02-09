@@ -1,9 +1,9 @@
 .LoginPage {
     position: absolute;
     width: 330px;
-    height: 200px;
+    height: 230px;
     left: calc(50% - 330px / 2);
-    top: calc(50% - 200px / 2);
+    top: calc(50% - 230px / 2);
 
     display: flex;
     flex-direction: column;
@@ -21,4 +21,14 @@
 
 .LoginPage__btn {
     width: 50%;
+    margin-bottom: 10px;
+}
+
+.LoginPage__link {
+    color: lightseagreen;
+    text-decoration: none;
+}
+
+.LoginPage__err {
+    color: red;
 }

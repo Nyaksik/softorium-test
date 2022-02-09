@@ -1,5 +1,6 @@
+import { useState } from "react"
 import InputMask from "react-input-mask"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { ACCESS_TOKEN } from "../../constant"
 import useContolInput from "../../hooks/useContolInput"
 import SigninService from "../../services/signinService"
@@ -10,6 +11,7 @@ function LoginPage() {
     const navigate = useNavigate()
     const login = useContolInput('')
     const password = useContolInput('')
+    const [err, setErr] = useState([])
 
     const data = {
         username: login.value,
@@ -18,23 +20,28 @@ function LoginPage() {
 
     async function signin(e) {
         e.preventDefault()
+
         const res = await new SigninService().signinUser(data)
-        const { access_token } = res
+        const resJson = res.json()
+        const { access_token } = resJson
 
-        new TokenService().setToken(ACCESS_TOKEN, access_token)
-
-        if(new TokenService().getToken(ACCESS_TOKEN)) {
-            navigate('/')
+        if(res.ok) {
+            new TokenService().setToken(ACCESS_TOKEN, access_token)
+            navigate('/signin')
+        } else if(res.status === 422) {
+            setErr([{ msg: 'Что-то пошло не так' }])
         } else {
-            navigate('/signup')
+            setErr(resJson)
         }
     }
 
     return (
         <div className="LoginPage">
-            <InputMask { ...login } className="LoginPage__input" placeholder="Введите email" />
+            <InputMask { ...login } className="LoginPage__input" placeholder="Введите email или номер телефона" />
             <input { ...password } type="password" className="LoginPage__input" placeholder="Введите пароль" />
             <button className="LoginPage__btn" type="submit" onClick={signin}>Войти</button>
+            {err.length > 0 && <p className="LoginPage__err">{err[0]?.msg}</p>} 
+            <Link className="LoginPage__link" to="/signup">Нет аккаунта? Зарегистрируйся!</Link>
         </div>
     )
 }

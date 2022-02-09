@@ -4,6 +4,7 @@ import TokenService from "./tokenService"
 export default function UserService() {
     this.baseHeader = () => {
         return {
+            'Content-Type': 'application/json',
             'X-APP-ID': new TokenService().getToken(DEVICE),
             'Authorization': `Bearer ${new TokenService().getToken(ACCESS_TOKEN)}`
         }
@@ -17,7 +18,11 @@ export default function UserService() {
         if(res.ok) {
             return res.json()
         } else {
-            new TokenService().removeToken(ACCESS_TOKEN)
+            this.logout()
         }
+    }
+
+    this.logout = () => {
+        new TokenService().removeToken(ACCESS_TOKEN)
     }
 }
